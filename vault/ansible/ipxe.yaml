@@ -1,0 +1,28 @@
+---
+- name: Set up ipxe server
+  hosts: all
+  become: no
+
+  tasks:
+    - name: Install dnsmasq and go
+      apt:
+        pkg:
+          - dnsmasq
+          - golang
+        state: present
+        update_cache: true
+
+    - name: Install server
+      shell: "go install github.com/hnatekmarorg/HCI@latest"
+
+    - name: Replace dnsmasq config
+      template:
+        src: templates/dnsmasq.conf
+        dest: "/etc/dnsmasq.conf"
+        mode: "0644"
+
+    - name: Enable dnsmasq service
+      systemd:
+        name: dnsmasq
+        enabled: yes
+        state: started
