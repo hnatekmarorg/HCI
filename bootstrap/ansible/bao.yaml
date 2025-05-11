@@ -1,0 +1,25 @@
+---
+- name: Set up Bao HA Cluster
+  hosts: bao
+  become: no
+  vars:
+    bao_binary_url: "https://github.com/openbao/openbao/releases/download/v2.2.1/bao_2.2.1_linux_amd64.deb"
+    control_plane_endpoint: "openbao.hnatekmar.xyz"  # DNS name or IP of the HA endpoint
+
+  tasks:
+    - name: Install openbao
+      apt:
+        deb: "{{ bao_binary_url }}"
+        state: present
+
+    - name: Generate Bao config for HA
+      template:
+        src: templates/bao-config.hcl.j2
+        dest: "/etc/openbao/openbao.hcl"
+        mode: "0644"
+
+    - name: Enable and start openbao
+      systemd:
+        name: openbao
+        enabled: yes
+        state: started

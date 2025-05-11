@@ -1,0 +1,10 @@
+.env
+# Compiled files
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+# Directories
+.terraform/
+.vagrant/
+
+.terraform.lock.hcl
