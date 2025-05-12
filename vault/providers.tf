@@ -16,6 +16,10 @@ terraform {
       source  = "hashicorp/null"
       version = "3.2.3"
     }
+    talos = {
+      source = "siderolabs/talos"
+      version = "0.8.0"
+    }
   }
 }
 

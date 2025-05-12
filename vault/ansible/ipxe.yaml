@@ -4,25 +4,25 @@
   become: no
 
   tasks:
-    - name: Install dnsmasq and go
-      apt:
-        pkg:
-          - dnsmasq
-          - golang
-        state: present
-        update_cache: true
+    - name: Compile server
+      delegate_to: 127.0.0.1
+      vars:
+        CGO_ENABLED: 0
+      command: "go build ../../server.go"
 
-    - name: Install server
-      shell: "go install github.com/hnatekmarorg/HCI@latest"
+    - name: Copy ipxe_server systemd service
+      copy:
+        src: ./templates/ipxe_server.service
+        dest: /etc/systemd/system
+        mode: u=rx
 
-    - name: Replace dnsmasq config
-      template:
-        src: templates/dnsmasq.conf
-        dest: "/etc/dnsmasq.conf"
-        mode: "0644"
+    - name: Copy server from local to remote
+      copy:
+        src: server
+        dest: /usr/local/bin/ipxe_server
 
-    - name: Enable dnsmasq service
+    - name: Enable ipxe_server service
       systemd:
-        name: dnsmasq
+        name: ipxe_server
         enabled: yes
         state: started

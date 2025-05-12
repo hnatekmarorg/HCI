@@ -33,6 +33,7 @@ resource "null_resource" "install_ipxe" {
     command =<<-EOT
       echo "root@${proxmox_lxc.ipxe.network[0].ip}" | sed "s/\/.*$//g"> inventory.ini
       ansible-playbook -i inventory.ini ./ansible/ipxe.yaml
+      ssh root@$(echo ${proxmox_lxc.ipxe.network[0].ip} | sed "s/\/.*$//g") "echo ${base64encode(local.node_config)} | base64 -d > /etc/ipxe_server.json"
     EOT
   }
 }

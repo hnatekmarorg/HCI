@@ -1,0 +1,14 @@
+[Unit]
+Description=IPXE server serve ipxe configs based on mac address see https://github.com/hnatekmarorg/HCI
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/local/bin/ipxe_server
+
+[Install]
+WantedBy=multi-user.target
